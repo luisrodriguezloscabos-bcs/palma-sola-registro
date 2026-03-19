@@ -281,6 +281,7 @@
 // ── CONFIG ─────────────────────────────────────────────────
 const STORAGE_KEY    = 'palma_sola_gb_2026';
 const ADMIN_PIN      = '2626';              // ← cambia antes de publicar
+const WEBHOOK_URL    = 'https://script.google.com/macros/s/AKfycbyJ3L2BvPwiWgXaTFPBijQqTrBlWmbtdKbS3OgnS-CcrJVq_8YGTYC61YlkaS78x7aZ7w/exec';
 const AGENCY_TRIGGERS = ['Broker / Agente', 'Equipo de Ventas'];
 
 // ── LANGUAGE ───────────────────────────────────────────────
@@ -416,6 +417,14 @@ function submitForm(e) {
   const records = getRecords();
   records.push(record);
   saveRecords(records);
+
+  // Send to Google Sheets
+  fetch(WEBHOOK_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(record)
+  }).catch(() => {}); // silent fail — data still saved locally
 
   setTimeout(() => {
     const c = T[lang];
